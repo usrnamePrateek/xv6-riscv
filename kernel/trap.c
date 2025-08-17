@@ -77,8 +77,31 @@ usertrap(void)
     exit(-1);
 
   // give up the CPU if this is a timer interrupt.
-  if(which_dev == 2)
-    yield();
+  if(which_dev == 2){
+
+    // get the current process
+    struct proc *p = myproc();
+    int should_yield = 0;
+    
+    if(p && p->state == RUNNING){
+      acquire(&p->lock);
+
+      if(p->weight_left > 0){
+        p->weight_left--;
+      }
+       
+      // process used all its time i.e weight
+      if(p->weight_left == 0){
+        should_yield = 1;
+      }
+
+      release(&p->lock);
+    }
+
+    if(should_yield){
+      yield();
+    }
+  }
 
   usertrapret();
 }

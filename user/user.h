@@ -41,3 +41,7 @@ void *memcpy(void *, const void *, uint);
 // umalloc.c
 void* malloc(uint);
 void free(void*);
+
+// add new functions
+int set_priority(int n);
+int get_priority(void);

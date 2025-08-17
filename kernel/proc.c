@@ -146,6 +146,10 @@ found:
   p->context.ra = (uint64)forkret;
   p->context.sp = p->kstack + PGSIZE;
 
+  // added default priority when new proccess is allocated 
+  p->priority = DEFAULT_PRIORITY;
+  p->weight_left = p->priority;
+
   return p;
 }
 
@@ -463,6 +467,10 @@ scheduler(void)
         // before jumping back to us.
         p->state = RUNNING;
         c->proc = p;
+
+        // when a process comes [back] to running state it weight left will be same as its priority
+        p->weight_left = p->priority;
+
         swtch(&c->context, &p->context);
 
         // Process is done running for now.
